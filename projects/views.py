@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from projects.forms import UploadForm
 from projects.models import Project, AlignmentFile
 
-
+from projects.tasks import test_task
 
 class ProjectList(LoginRequiredMixin, ListView):
     queryset = Project.objects.all()
@@ -78,5 +78,6 @@ class UploadView(FormView):
             aln_file.alnfile = afile
             aln_file.name = afile.name
             aln_file.save()
+            test_task.apply_async()
         # form.send_email()
         return super(UploadView, self).form_valid(form)
