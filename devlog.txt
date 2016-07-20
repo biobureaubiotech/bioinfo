@@ -8,3 +8,10 @@ CREATE USER raony WITH PASSWORD 'raony';
 GRANT ALL PRIVILEGES ON DATABASE bioinfo_biobureau to raony;
 
 pip install sqlparse==0.1.19
+
+
+Tasks
+
+celery -A bioinfo_biobureau.taskapp worker -l info
+
+tasks working!

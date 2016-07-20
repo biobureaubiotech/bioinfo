@@ -1,24 +1,20 @@
-
-from __future__ import absolute_import
-import os
-from celery import Celery
-from django.apps import AppConfig
+from celery.decorators import task
+from projects.models import AlignmentFile
 from django.conf import settings
 
 
-app = Celery('bioinfo_biobureau')
+@task(name="sum_two_numbers")
+def add(x, y):
+    print('HELLO TASKS')
+    print(x + y)
+    return x + y
 
-
-# @app.task(bind=True)
-# def debug_task(self):
-#     print('HELLO TASK!!!')
-#     print('Request: {0!r}'.format(self.request))  # pragma: no cover
-
-@app.task()
-def test_task(self):
-    print('##########################Foo#################')
-    sleep(4)
-    print('###########################################')
-    sleep(2)
-    print('##########################Bar#################')
-    return 3
+@task(name="import_alignment_to_database")
+def import_alignment(alignment_file_id):
+    print('Import FILE', alignment_file_id)
+    aln_file = AlignmentFile.objects.get(pk=alignment_file_id)
+    print(aln_file.alnfile)
+    infile = open('%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile))
+    for line in infile:
+        print(line)
+    
