@@ -1,0 +1,10 @@
+Debug with sqlparse
+
+
+psql -d template1 -U postgres
+
+CREATE DATABASE bioinfo_biobureau;
+CREATE USER raony WITH PASSWORD 'raony';
+GRANT ALL PRIVILEGES ON DATABASE bioinfo_biobureau to raony;
+
+pip install sqlparse==0.1.19

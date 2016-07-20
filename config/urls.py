@@ -18,6 +18,7 @@ urlpatterns = [
     # User management
     url(r'^users/', include('bioinfo_biobureau.users.urls', namespace='users')),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^projects/', include('projects.urls')),
 
     # Your stuff: custom urls includes go here
 

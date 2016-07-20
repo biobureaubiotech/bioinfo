@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Add Alignments</h2>
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    <p><label for="id_file">Select Files:</label> <input id="id_file" name="file" type="file" multiple /></p>
+
+    <input type="submit" value="Upload" />
+    </form>
+
+{% endblock %}
+
+
+

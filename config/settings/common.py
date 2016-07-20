@@ -46,6 +46,7 @@ LOCAL_APPS = (
     # custom users app
     'bioinfo_biobureau.users.apps.UsersConfig',
     # Your stuff: custom apps go here
+    'projects',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

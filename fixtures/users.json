@@ -1,0 +1,60 @@
+[
+{
+  "model": "account.emailconfirmation",
+  "pk": 1,
+  "fields": {
+    "email_address": 1,
+    "created": "2016-07-20T19:39:03.967Z",
+    "sent": "2016-07-20T19:39:04.423Z",
+    "key": "0jp640hquvcjlbnevbdbsdbjs5le6zglq2bblgg1z18fn3ejsszimf7hjvn6scat"
+  }
+},
+{
+  "model": "users.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$axgjXnLMyBQi$icl0cM/SwYO87wDEKhCHUR0WCisyCR2UtB0IplKgeFE=",
+    "last_login": "2016-07-20T18:25:18.354Z",
+    "is_superuser": true,
+    "username": "raony",
+    "first_name": "",
+    "last_name": "",
+    "email": "raony.cardenas@biobureau.com.br",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2016-07-20T16:24:52.377Z",
+    "name": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "users.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$24000$6U30Oze9aPk8$0rtJbhmrEskCSk8WPxaO9cWX9jd4VOwnl7SKPLa3xUQ=",
+    "last_login": "2016-07-20T18:22:20.317Z",
+    "is_superuser": false,
+    "username": "teste",
+    "first_name": "",
+    "last_name": "",
+    "email": "teste@teste.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2016-07-20T18:21:53.468Z",
+    "name": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "email": "raony.cardenas@biobureau.com.br",
+    "verified": true,
+    "primary": true
+  }
+}
+]
