@@ -8,4 +8,8 @@ def restore_users():
     local('python manage.py loaddata fixtures/users.json')
 
 def reset():
-    local('./manage.py sqlflush | ./manage.py dbshell')
+    local('./manage.py reset_db')
+    local('rm -rf projects/migrations')
+    local('./manage.py makemigrations projects')
+    local('./manage.py migrate')
+    restore_users()

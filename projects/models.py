@@ -10,6 +10,17 @@ class Project(models.Model):
     user = models.ForeignKey(User)
     description = models.TextField()
 
+    ALIGNER_CHOICES = (
+        ('bwa', 'BWA'),
+        ('diamond', 'DIAMOND'),
+    )
+
+    aligner = models.CharField(
+        max_length=255,
+        choices=ALIGNER_CHOICES
+    )
+    # database = 
+
     def __str__(self):
         return self.name
 

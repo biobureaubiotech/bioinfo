@@ -22,7 +22,7 @@ class ProjectList(LoginRequiredMixin, ListView):
 
 class ProjectCreate(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ['name', 'description']
+    fields = ['name', 'description', 'aligner']
     success_url = reverse_lazy('project-list')
 
     def form_valid(self, form):
@@ -57,13 +57,6 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
 class ProjectDelete(LoginRequiredMixin, DeleteView):
     model = Project
     success_url = reverse_lazy('project-list')
-
-# class AlignmentFileCreate(CreateView):
-#     model = AlignmentFile
-#     fields = ['file']
-#     success_url = reverse_lazy('project-list')
-
-
 
 class UploadView(FormView):
     template_name = 'projects/fileupload.html'
