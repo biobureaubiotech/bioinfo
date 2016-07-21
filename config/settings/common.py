@@ -47,6 +47,7 @@ LOCAL_APPS = (
     'bioinfo_biobureau.users.apps.UsersConfig',
     # Your stuff: custom apps go here
     'projects',
+    'search',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -242,7 +243,8 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database.DatabaseBackend'
 INSTALLED_APPS += ("djcelery", )
 import djcelery
 djcelery.setup_loader()
-
+CELERY_ACCEPT_CONTENT = ['pickle', 'json', 'msgpack', 'yaml']
+ALLOWED_HOSTS=['*']
 # django-compressor
 # ------------------------------------------------------------------------------
 

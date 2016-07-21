@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 
 from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -13,6 +14,8 @@ from projects.forms import UploadForm
 from projects.models import Project, AlignmentFile
 
 from projects.tasks import import_alignment
+
+
 
 class ProjectList(LoginRequiredMixin, ListView):
     queryset = Project.objects.all()
@@ -48,8 +51,8 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(ProjectDetail, self).get_context_data(**kwargs)
-        print('context')
-        print(context)
+        # print('context')
+        # print(context)
         # Add in a QuerySet of all the books
         context['alignment_files'] = AlignmentFile.objects.filter(project=context['project'])
         return context
@@ -61,7 +64,7 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
 class UploadView(FormView):
     template_name = 'projects/fileupload.html'
     form_class = UploadForm
-    success_url = reverse_lazy('project-list')
+    # success_url = reverse_lazy('project-list')
 
     def form_valid(self, form):
         # This method is called when valid form data has been POSTed.
@@ -77,8 +80,17 @@ class UploadView(FormView):
             aln_file.project = Project.objects.get(pk=project_id)
             aln_file.alnfile = afile
             aln_file.name = afile.name
+            aln_file.status = 'new'
             aln_file.save()
             import_alignment.delay(aln_file.id)
 
         # form.send_email()
         return super(UploadView, self).form_valid(form)
+    
+    def get_success_url(self):
+
+        path = self.request.path
+        path = path.split('/')
+        project_id = path[2]
+        
+        return reverse('project-detail', args=(project_id,))

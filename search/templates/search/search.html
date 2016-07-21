@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Search</h2>
+    
+    <table class="table">    
+    <form method="post">{% csrf_token %}
+    
+    <div class="col-xs-4">
+      <input class="form-control" id="search" type="text" name="search" placeholder="Ex. Limonene" value="{{query}}">
+    </div>
+        <input type="submit" value="Search" class="btn btn-primary" />
+    </form>
+    
+    <h3>Results</h3>
+    
+    <table class="table">
+        <tr>
+
+            <th>#</th>
+            <th>Project</th>
+            <th>alnfile</th>
+            <th>qseqid</th>
+            <th>sseqid</th>
+            <th>pident</th>
+            <th>length</th>
+            <th>mismatch</th>
+            <th>gapopen</th>
+            <th>qstart</th>
+            <th>qend</th>
+            <th>sstart</th>
+            <th>send</th>
+            <th>evalue</th>
+            <th>bitscore</th>
+            <th>GI</th>
+            <th>GeneID</th>
+            <th>NCBI_taxon_of_the_reference</th>
+            <th>Lowest_taxon_of_the_cluster</th>
+            <th>RepID</th>
+            <th>Cluster_Name</th>
+            <th>Options</th>
+
+        </tr>
+        {% for hit in results %}
+        <tr>
+            <td></td>
+            <td>{{hit.project}}</td>
+            <td>{{hit.alnfile.name}}</td>
+            <td>{{hit.qseqid}}</td>
+            <td>{{hit.sseqid}}</td>
+            <td>{{hit.pident}}</td>
+            <td>{{hit.length}}</td>
+            <td>{{hit.mismatch}}</td>
+            <td>{{hit.gapopen}}</td>
+            <td>{{hit.qstart}}</td>
+            <td>{{hit.qend}}</td>
+            <td>{{hit.sstart}}</td>
+            <td>{{hit.send}}</td>
+            <td>{{hit.evalue}}</td>
+            <td>{{hit.bitscore}}</td>
+            <td>{{hit.GI}}</td>
+            <td>{{hit.GeneID}}</td>
+            <td>{{hit.NCBI_taxon_of_the_reference}}</td>
+            <td>{{hit.Lowest_taxon_of_the_cluster}}</td>
+            <td>{{hit.RepID}}</td>
+            <td>{{hit.Cluster_Name}}</td>
+            <td>{{hit.Options}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+
+
+
+{% endblock %}
+
