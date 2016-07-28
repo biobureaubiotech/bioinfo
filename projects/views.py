@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views.generic import ListView, DetailView
@@ -14,7 +14,8 @@ from projects.forms import UploadForm
 from projects.models import Project, AlignmentFile
 
 from projects.tasks import import_alignment
-
+from django.contrib import messages
+from django.db import transaction
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -54,7 +55,7 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         # print('context')
         # print(context)
         # Add in a QuerySet of all the books
-        context['alignment_files'] = AlignmentFile.objects.filter(project=context['project'])
+        context['alignment_files'] = AlignmentFile.objects.filter(project=context['project']).order_by('name')
         return context
 
 class ProjectDelete(LoginRequiredMixin, DeleteView):
@@ -94,3 +95,20 @@ class UploadView(FormView):
         project_id = path[2]
         
         return reverse('project-detail', args=(project_id,))
+
+def action(request):
+    if request.method == 'POST':
+        # print(dir(request))
+        # print(request.META)
+        
+        alignment_files = request.POST.getlist('alignment_files')
+        # first_object = alignment_files[0]
+        # aln_object = AlignmentFile.objects.get(pk=first_object)
+        # project_id = aln_object.project.id
+        for aln_file in alignment_files:
+            import_alignment.delay(aln_file)
+        messages.add_message(request, messages.INFO, 'Files being reinserted!')
+
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect(reverse('project-detail', kwargs={'pk': project_id}))
+

@@ -26,3 +26,9 @@ celery -A bioinfo_biobureau.taskapp worker -l info
 python manage.py celery worker -l DEBUG
 
 also working!!
+
+for i in *; do zip $i.zip $i; done
+
+http://stackoverflow.com/questions/29831976/manual-commit-in-django-1-8/29834940
+
+http://stackoverflow.com/questions/29149714/upgrading-transaction-commit-manually-to-django-1-6

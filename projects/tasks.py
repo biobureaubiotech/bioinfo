@@ -3,6 +3,10 @@ from django.conf import settings
 
 from projects.models import AlignmentFile, AlignmentHit
 
+import zipfile
+
+from django import db
+from django.db import transaction
 
 @task(name="sum_two_numbers")
 def add(x, y):
@@ -10,30 +14,49 @@ def add(x, y):
     print(x + y)
     return x + y
 
+
 @task(name="import_alignment_to_database")
 def import_alignment(alignment_file_id):
     
     print('Import FILE', alignment_file_id)
 
     aln_file = AlignmentFile.objects.get(pk=alignment_file_id)
-    # print(aln_file.alnfile)
+    #delete hits from files before inserting
+    AlignmentHit.objects.filter(alnfile=aln_file).delete()
 
-    infile = open('%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile))
+    print(aln_file.alnfile)
+
+    full_path = '%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile)
+
+    if aln_file.name.endswith('.zip'):
+        archive = zipfile.ZipFile(full_path, 'r')
+        filename = archive.namelist()[0]
+        infile = archive.open(filename, 'r')
+
+    else:
+        infile = open(full_path, 'r')
 
     count = 0
+    
+    
     hits = []
     for line in infile:
-        # print(line)
+        
+        count += 1
 
-        #bulk insert variants objects
-        if count == 5000:
-            # print "Inserting %s " % (count2),
+        # bulk insert variants objects
+        if count == 10000:
+            # with transaction.atomic():
+            # print("Inserting ...")
             AlignmentHit.objects.bulk_create(hits)
+            # db.reset_queries()
             # print ' Done!'
             count = 0
+            del hits
             hits = []
         
-        hit = line.split('\t')
+
+        hit = line.decode('utf-8').split('\t')
         # print(hit)
         # print(len(hit))
 
@@ -65,7 +88,11 @@ def import_alignment(alignment_file_id):
             # aln_hit.save()
             hits.append(aln_hit)
 
+    # with transaction.atomic():
+    # print("Inserting Final...")
     AlignmentHit.objects.bulk_create(hits)
+    # db.reset_queries()
+    del hits
 
     
     aln_file.status = 'inserted'

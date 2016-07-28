@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
     <h2>Project {{project.name}}</h2>
     <table class="table">
     <tr>
@@ -12,15 +13,28 @@
     </table>
     <h3>Alignments</h3>
     <a href="{% url 'project-upload' project.id %}" class="btn btn-primary" role="button">Upload Alignments</a>
+
+
+    <form action="{% url 'project-action' %}" method="POST" id="alignments_form">
+    {% csrf_token %}
+    <div class="row-fluid">
+      <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
+           <a href="#" class="btn btn-primary" role="button" onClick='submitForm()'>Reinsert</a>
+      </div>
+    </div>
+ 
+    
     <table class="table">
         <tr>
 
+            <th>#<input type="checkbox" id="select_all"></th>
             <th>Name</th>
             <th>Status</th>
             <th>Options</th>
         </tr>
         {% for alignment_file in alignment_files %}
         <tr>
+            <td><input type="checkbox" name="alignment_files" value="{{ alignment_file.id }}"></td>
             <td>{{ alignment_file.name }}</td>
             <td>{{ alignment_file.status }}</td>
             <td>
@@ -31,9 +45,34 @@
         </tr>
         {% endfor %}
     </table>
-    
+
+    </form>
 
 
 
 {% endblock %}
 
+{% block extra_javascript %}
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
+
+});
+
+function submitForm() {
+       $("#alignments_form").submit();
+    }
+
+</script>
+
+
+{% endblock extra_javascript %}
