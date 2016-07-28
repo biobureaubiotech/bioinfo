@@ -235,7 +235,6 @@ INSTALLED_APPS += ('kombu.transport.django',)
 BROKER_URL = env('CELERY_BROKER_URL', default='django://')
 if BROKER_URL == 'django://':
     CELERY_RESULT_BACKEND = 'redis://'
-    # CELERY_RESULT_BACKEND = 'db+postgresql://raony:Epkghi59@localhost/bioinfo_biobureau'
 else:
     CELERY_RESULT_BACKEND = BROKER_URL
 ########## END CELERY
