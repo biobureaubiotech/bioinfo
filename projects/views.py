@@ -11,11 +11,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from projects.forms import UploadForm
-from projects.models import Project, AlignmentFile
+from projects.models import Project, AlignmentFile, AlignmentHit
 
 from projects.tasks import import_alignment
 from django.contrib import messages
 from django.db import transaction
+from django.conf import settings
+
+import os
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -98,16 +101,27 @@ class UploadView(FormView):
 
 def action(request):
     if request.method == 'POST':
-        # print(dir(request))
-        # print(request.META)
         
+        action = request.POST.get('action')
+        # print(action)
+
         alignment_files = request.POST.getlist('alignment_files')
-        # first_object = alignment_files[0]
-        # aln_object = AlignmentFile.objects.get(pk=first_object)
-        # project_id = aln_object.project.id
-        for aln_file in alignment_files:
-            import_alignment.delay(aln_file)
-        messages.add_message(request, messages.INFO, 'Files being reinserted!')
+
+        if action == 'reinsert':    
+            for aln_file in alignment_files:
+                import_alignment.delay(aln_file)
+            messages.add_message(request, messages.INFO, 'Files are being reinserted!')
+        elif action == 'delete':
+            for aln_file_id in alignment_files:
+                
+                aln_file = AlignmentFile.objects.get(pk=aln_file_id)
+                #deleete hits
+                AlignmentHit.objects.filter(alnfile=aln_file).delete()
+                # print(aln_file.alnfile)
+                full_path = '%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile)
+                os.remove(full_path)
+                AlignmentFile.objects.filter(pk=aln_file_id).delete()
+            messages.add_message(request, messages.INFO, 'Files were deleted!')
 
     return redirect(request.META.get('HTTP_REFERER'))
     # return redirect(reverse('project-detail', kwargs={'pk': project_id}))

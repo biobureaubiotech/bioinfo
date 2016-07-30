@@ -45,7 +45,7 @@ def import_alignment(alignment_file_id):
         count += 1
 
         # bulk insert variants objects
-        if count == 10000:
+        if count == 100000:
             # with transaction.atomic():
             # print("Inserting ...")
             AlignmentHit.objects.bulk_create(hits)
@@ -57,11 +57,23 @@ def import_alignment(alignment_file_id):
         
 
         hit = line.decode('utf-8').split('\t')
+
+        # if len(hit) < 16:
+        #     diff = 16 - len(hit)
+        #     for i in range(0,2):
+        #         hit.append('')
+
         # print(hit)
         # print(len(hit))
 
+        # if len(hit) < 19:
+        #     diff = 19 - len(hit)
+        #     # print diff
+        #     for i in range(0,diff):
+        #         hit.append('')
+
         if hit[0] != 'qseqid':
-        
+            
             aln_hit = AlignmentHit()
             aln_hit.project = aln_file.project
             aln_hit.alnfile = aln_file
@@ -84,9 +96,10 @@ def import_alignment(alignment_file_id):
             aln_hit.Lowest_taxon_of_the_cluster = hit[15]
             aln_hit.RepID = hit[16]
             aln_hit.Cluster_Name = hit[17]
+            # aln_hit.go_terms = hit[18]
 
-            # aln_hit.save()
-            hits.append(aln_hit)
+            aln_hit.save()
+            # hits.append(aln_hit)
 
     # with transaction.atomic():
     # print("Inserting Final...")

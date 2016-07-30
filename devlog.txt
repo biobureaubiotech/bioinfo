@@ -32,3 +32,81 @@ for i in *; do zip $i.zip $i; done
 http://stackoverflow.com/questions/29831976/manual-commit-in-django-1-8/29834940
 
 http://stackoverflow.com/questions/29149714/upgrading-transaction-commit-manually-to-django-1-6
+
+
+[2016-07-28 13:11:28,066: WARNING/Worker-1] alignments/1/Casearia_sylvestris_results.tab.zip
+[2016-07-28 13:11:28,406: WARNING/Worker-1] Import FILE
+[2016-07-28 13:11:28,406: WARNING/Worker-1] 13
+[2016-07-28 13:11:28,404: ERROR/MainProcess] Task import_alignment_to_database[4b2ff504-e02d-4faa-96ed-0f86e88bae32] raised unexpected: IndexError('list index out of range',)
+Traceback (most recent call last):
+  File "/home/raony/.virtualenvs/bioinfo_biobureau/lib/python3.5/site-packages/celery/app/trace.py", line 240, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/home/raony/.virtualenvs/bioinfo_biobureau/lib/python3.5/site-packages/celery/app/trace.py", line 438, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/home/raony/dev/bitbucket/bioinfo_biobureau/projects/tasks.py", line 85, in import_alignment
+    aln_hit.RepID = hit[16]
+IndexError: list index out of range
+[2016-07-28 13:11:28,411: WARNING/Worker-1] alignments/1/Cedrela_fissilis_results.tab.zip
+[2016-07-28 13:13:53,381: WARNING/Worker-1] Inserting Final...
+[2016-07-28 13:13:54,077: WARNING/Worker-1] Finished!
+[2016-07-28 13:13:54,092: WARNING/Worker-1] Import FILE
+[2016-07-28 13:13:54,092: WARNING/Worker-1] 14
+[2016-07-28 13:13:54,097: WARNING/Worker-1] alignments/1/Centella_asiatica_results.tab.zip
+[2016-07-28 13:13:54,155: ERROR/MainProcess] Task import_alignment_to_database[a4b46689-218c-4358-932b-5cbf0575ebfa] raised unexpected: IndexError('list index out of range',)
+Traceback (most recent call last):
+  File "/home/raony/.virtualenvs/bioinfo_biobureau/lib/python3.5/site-packages/celery/app/trace.py", line 240, in trace_task
+    R = retval = fun(*args, **kwargs)
+  File "/home/raony/.virtualenvs/bioinfo_biobureau/lib/python3.5/site-packages/celery/app/trace.py", line 438, in __protected_call__
+    return self.run(*args, **kwargs)
+  File "/home/raony/dev/bitbucket/bioinfo_biobureau/projects/tasks.py", line 85, in import_alignment
+    aln_hit.RepID = hit[16]
+IndexError: list index out of range
+
+
+[2016-07-28 13:40:08,703: WARNING/Worker-1] alignments/1/Casearia_sylvestris_results.tab.zip
+[2016-07-28 13:40:08,704: WARNING/Worker-1] ['qseqid', 'sseqid', 'pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore', 'GI', 'GeneID', 'NCBI-taxon of the reference', 'Lowest taxon of the cluster', 'RepID', 'Cluster Name\n']
+[2016-07-28 13:40:08,704: WARNING/Worker-1] 18
+[2016-07-28 13:40:08,704: WARNING/Worker-1] ['0', 'UniRef90_B9HBM9', '94.2', '69', '4', '0', '208', '2', '387', '455', '1.9e-28', '131.7', '566175247; 550335802', '7487261', '3694', 'Populus', 'B9HBM9_POPTR', 'Uncharacterized protein ', 'GO:0003700 GO:0006351\n']
+[2016-07-28 13:40:08,705: WARNING/Worker-1] 19
+[2016-07-28 13:40:08,714: WARNING/Worker-1] ['1', 'UniRef90_UPI0005FB7953', '61.2', '67', '26', '0', '8', '208', '246', '312', '4.6e-14', '84.0', '', 'Jatropha curcas', 'UPI0005FB7953', 'PREDICTED: uncharacterized protein LOC105640120 \n']
+[2016-07-28 13:40:08,715: WARNING/Worker-1] 16
+
+
+
+
+
+
+
+
+
+6   UniRef90_A0A024KYX1 100.0   156 0   0   2   469 20  175 1.4e-84 319.7   597601083; 665444161; 597610118; 597618322; 59760...    562 root    A0A024KYX1_ECOLX    Major spike protein G   GO:0019048 GO:0019028 GO:0005198 NA
+
+7   UniRef90_A0A024KYX1 100.0   156 0   0   1   468 20  175 1.4e-84 319.7   597601083; 665444161; 597610118; 597618322; 59760...    562 root    A0A024KYX1_ECOLX    Major spike protein G   GO:0019048 GO:0019028 GO:0005198 NA
+
+
+S3 boto
+
+Configuring
+
+PlataformaBioinfo
+Access Key ID:
+AKIAIUIQT7TUOXOQFUPQ
+Secret Access Key:
+d8hYwv1wkHFWyRh5VsC5fIPStvZaCMX9aRlzTGHf
+
+us-west-2
+
+
+https://github.com/boto/boto3
+
+For the pipeline
+
+https://github.com/MikkelSchubert/adapterremoval
+
+boto3 e paramiko
+
+https://aws.amazon.com/blogs/compute/scheduling-ssh-jobs-using-aws-lambda/
+
+http://stackoverflow.com/questions/6025546/issues-trying-to-ssh-into-a-fresh-ec2-instance-with-paramiko
+
+python manage.py startapp analyses

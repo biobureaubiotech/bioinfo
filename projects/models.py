@@ -57,3 +57,4 @@ class AlignmentHit(models.Model):
     Lowest_taxon_of_the_cluster = models.TextField()
     RepID = models.TextField()
     Cluster_Name = models.TextField()
+    go_terms = models.TextField()

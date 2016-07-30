@@ -47,6 +47,7 @@ LOCAL_APPS = (
     'bioinfo_biobureau.users.apps.UsersConfig',
     # Your stuff: custom apps go here
     'projects',
+    'analyses',
     'search',
 )
 

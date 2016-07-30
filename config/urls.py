@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^accounts/', include('allauth.urls')),
     
     url(r'^projects/', include('projects.urls')),
+    url(r'^analyses/', include('analyses.urls')),
+    
     url(r'^search/', include('search.urls')),
     # Your stuff: custom urls includes go here
 

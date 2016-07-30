@@ -12,16 +12,20 @@
     </tr>
     </table>
     <h3>Alignments</h3>
-    <a href="{% url 'project-upload' project.id %}" class="btn btn-primary" role="button">Upload Alignments</a>
-
+    
 
     <form action="{% url 'project-action' %}" method="POST" id="alignments_form">
     {% csrf_token %}
+
+    <input type="hidden" name="action" value="">
+    <a href="{% url 'project-upload' project.id %}" class="btn btn-primary" role="button">Upload Alignments</a>
     <div class="row-fluid">
       <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
-           <a href="#" class="btn btn-primary" role="button" onClick='submitForm()'>Reinsert</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submitForm("reinsert")'>Reinsert</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submitForm("delete")'>Delete</a>
       </div>
     </div>
+    <br>
  
     
     <table class="table">
@@ -68,9 +72,10 @@ $(document).ready(function(){
 
 });
 
-function submitForm() {
-       $("#alignments_form").submit();
-    }
+function submitForm(action) {
+        $('input[name="action"]').val(action);
+        $("#alignments_form").submit();
+}
 
 </script>
 
