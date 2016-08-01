@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.views.generic import ListView, DetailView
@@ -11,10 +11,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from projects.forms import UploadForm
-from projects.models import Project, AlignmentFile
+from projects.models import Project, AlignmentFile, AlignmentHit
 
 from projects.tasks import import_alignment
+from django.contrib import messages
+from django.db import transaction
+from django.conf import settings
 
+import os
 
 
 class ProjectList(LoginRequiredMixin, ListView):
@@ -54,7 +58,7 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         # print('context')
         # print(context)
         # Add in a QuerySet of all the books
-        context['alignment_files'] = AlignmentFile.objects.filter(project=context['project'])
+        context['alignment_files'] = AlignmentFile.objects.filter(project=context['project']).order_by('name')
         return context
 
 class ProjectDelete(LoginRequiredMixin, DeleteView):
@@ -94,3 +98,31 @@ class UploadView(FormView):
         project_id = path[2]
         
         return reverse('project-detail', args=(project_id,))
+
+def action(request):
+    if request.method == 'POST':
+        
+        action = request.POST.get('action')
+        # print(action)
+
+        alignment_files = request.POST.getlist('alignment_files')
+
+        if action == 'reinsert':    
+            for aln_file in alignment_files:
+                import_alignment.delay(aln_file)
+            messages.add_message(request, messages.INFO, 'Files are being reinserted!')
+        elif action == 'delete':
+            for aln_file_id in alignment_files:
+                
+                aln_file = AlignmentFile.objects.get(pk=aln_file_id)
+                #deleete hits
+                AlignmentHit.objects.filter(alnfile=aln_file).delete()
+                # print(aln_file.alnfile)
+                full_path = '%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile)
+                os.remove(full_path)
+                AlignmentFile.objects.filter(pk=aln_file_id).delete()
+            messages.add_message(request, messages.INFO, 'Files were deleted!')
+
+    return redirect(request.META.get('HTTP_REFERER'))
+    # return redirect(reverse('project-detail', kwargs={'pk': project_id}))
+

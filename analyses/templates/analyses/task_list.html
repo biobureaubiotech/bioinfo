@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Tasks</h2>
+    <a href="{#% url 'analyses-add' %#}" class="btn btn-primary" role="button">New Task</a>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Options</th>
+        </tr>
+        {% for object in object_list %}
+        <tr>
+            <td>{{ object.name }}</td>
+            <td>
+                <a href="{% url "project-detail" project.id %}" class="btn btn-primary" role="button">View</a>
+                <a href="{% url "project-update" project.id %}" class="btn btn-primary" role="button">Edit</a>
+                <a href="{% url "project-delete" project.id %}" class="btn btn-primary" role="button">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    
+{% endblock %}

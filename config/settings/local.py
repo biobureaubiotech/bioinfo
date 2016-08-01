@@ -11,6 +11,7 @@ Local settings
 from .common import *  # noqa
 import socket
 import os
+import sys
 
 # DEBUG
 # ------------------------------------------------------------------------------
@@ -74,3 +75,7 @@ CELERY_ALWAYS_EAGER = False
 ########## END CELERY
 
 # Your local stuff: Below this line define 3rd party library settings
+
+
+if "celery" in sys.argv:
+    DEBUG = False

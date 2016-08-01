@@ -2,6 +2,7 @@ from fabric.api import run, local
 
 def reset_db():
     local('uname -s')
+    
 def backup_users():
     local('python manage.py dumpdata account users --indent 2 > fixtures/users.json')
 def restore_users():

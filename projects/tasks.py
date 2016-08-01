@@ -3,6 +3,10 @@ from django.conf import settings
 
 from projects.models import AlignmentFile, AlignmentHit
 
+import zipfile
+
+from django import db
+from django.db import transaction
 
 @task(name="sum_two_numbers")
 def add(x, y):
@@ -10,35 +14,66 @@ def add(x, y):
     print(x + y)
     return x + y
 
+
 @task(name="import_alignment_to_database")
 def import_alignment(alignment_file_id):
     
     print('Import FILE', alignment_file_id)
 
     aln_file = AlignmentFile.objects.get(pk=alignment_file_id)
-    # print(aln_file.alnfile)
+    #delete hits from files before inserting
+    AlignmentHit.objects.filter(alnfile=aln_file).delete()
 
-    infile = open('%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile))
+    print(aln_file.alnfile)
+
+    full_path = '%s/%s' % (settings.MEDIA_ROOT, aln_file.alnfile)
+
+    if aln_file.name.endswith('.zip'):
+        archive = zipfile.ZipFile(full_path, 'r')
+        filename = archive.namelist()[0]
+        infile = archive.open(filename, 'r')
+
+    else:
+        infile = open(full_path, 'r')
 
     count = 0
+    
+    
     hits = []
     for line in infile:
-        # print(line)
+        
+        count += 1
 
-        #bulk insert variants objects
-        if count == 5000:
-            # print "Inserting %s " % (count2),
+        # bulk insert variants objects
+        if count == 100000:
+            # with transaction.atomic():
+            # print("Inserting ...")
             AlignmentHit.objects.bulk_create(hits)
+            # db.reset_queries()
             # print ' Done!'
             count = 0
+            del hits
             hits = []
         
-        hit = line.split('\t')
+
+        hit = line.decode('utf-8').split('\t')
+
+        # if len(hit) < 16:
+        #     diff = 16 - len(hit)
+        #     for i in range(0,2):
+        #         hit.append('')
+
         # print(hit)
         # print(len(hit))
 
+        # if len(hit) < 19:
+        #     diff = 19 - len(hit)
+        #     # print diff
+        #     for i in range(0,diff):
+        #         hit.append('')
+
         if hit[0] != 'qseqid':
-        
+            
             aln_hit = AlignmentHit()
             aln_hit.project = aln_file.project
             aln_hit.alnfile = aln_file
@@ -61,11 +96,16 @@ def import_alignment(alignment_file_id):
             aln_hit.Lowest_taxon_of_the_cluster = hit[15]
             aln_hit.RepID = hit[16]
             aln_hit.Cluster_Name = hit[17]
+            # aln_hit.go_terms = hit[18]
 
-            # aln_hit.save()
-            hits.append(aln_hit)
+            aln_hit.save()
+            # hits.append(aln_hit)
 
+    # with transaction.atomic():
+    # print("Inserting Final...")
     AlignmentHit.objects.bulk_create(hits)
+    # db.reset_queries()
+    del hits
 
     
     aln_file.status = 'inserted'
