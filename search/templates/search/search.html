@@ -4,15 +4,33 @@
     <h2>Search</h2>
     
     <table class="table">    
-    <form method="post">{% csrf_token %}
+    <form method="get">
     
     <div class="col-xs-4">
       <input class="form-control" id="search" type="text" name="search" placeholder="Ex. Limonene" value="{{query}}">
     </div>
         <input type="submit" value="Search" class="btn btn-primary" />
     </form>
-    
+    <br>
     <h3>Results</h3>
+
+
+    <div class="pagination">
+        <span class="step-links">
+            {% if results.has_previous %}
+                <a href="?search={{query}}&page={{ results.previous_page_number }}" class="btn btn-primary" role="button">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ results.number }} of {{ results.paginator.num_pages }}.
+            </span>
+
+            {% if results.has_next %}
+                <a href="?search={{query}}&page={{ results.next_page_number }}" class="btn btn-primary" role="button">next</a>
+            {% endif %}
+        </span>
+    </div>
+
     
     <table class="table">
         <tr>

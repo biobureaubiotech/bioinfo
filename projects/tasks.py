@@ -45,7 +45,7 @@ def import_alignment(alignment_file_id):
         count += 1
 
         # bulk insert variants objects
-        if count == 100000:
+        if count == 50000:
             # with transaction.atomic():
             # print("Inserting ...")
             AlignmentHit.objects.bulk_create(hits)
@@ -98,8 +98,8 @@ def import_alignment(alignment_file_id):
             aln_hit.Cluster_Name = hit[17]
             # aln_hit.go_terms = hit[18]
 
-            aln_hit.save()
-            # hits.append(aln_hit)
+            # aln_hit.save()
+            hits.append(aln_hit)
 
     # with transaction.atomic():
     # print("Inserting Final...")
