@@ -4,17 +4,27 @@
   "pk": 1,
   "fields": {
     "email_address": 1,
-    "created": "2016-07-20T19:39:03.967Z",
-    "sent": "2016-07-20T19:39:04.423Z",
-    "key": "0jp640hquvcjlbnevbdbsdbjs5le6zglq2bblgg1z18fn3ejsszimf7hjvn6scat"
+    "created": "2016-07-21T20:18:25.057Z",
+    "sent": "2016-07-21T20:18:25.185Z",
+    "key": "y3vpb4j32tusf97t0v29yyfwbf7sfzwvggcum7kjowhx1lpfeqaj3lt43hfwvloc"
+  }
+},
+{
+  "model": "account.emailconfirmation",
+  "pk": 2,
+  "fields": {
+    "email_address": 2,
+    "created": "2016-07-22T19:11:55.493Z",
+    "sent": "2016-07-22T19:11:55.723Z",
+    "key": "uavrv4zchfkwf7bkqcmrmpz3foqfaga9ayiqke8zkvd7n7u8esenavtehqdjchl0"
   }
 },
 {
   "model": "users.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$24000$axgjXnLMyBQi$icl0cM/SwYO87wDEKhCHUR0WCisyCR2UtB0IplKgeFE=",
-    "last_login": "2016-07-20T18:25:18.354Z",
+    "password": "pbkdf2_sha256$24000$bUVtCcorcW1a$i46Rl+pxUWJyA0Wdihk5uJ0adNVvNiY0YH6GgvI02og=",
+    "last_login": "2016-07-27T14:04:31.854Z",
     "is_superuser": true,
     "username": "raony",
     "first_name": "",
@@ -22,7 +32,7 @@
     "email": "raony.cardenas@biobureau.com.br",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2016-07-20T16:24:52.377Z",
+    "date_joined": "2016-07-21T20:18:00.652Z",
     "name": "",
     "groups": [],
     "user_permissions": []
@@ -32,16 +42,16 @@
   "model": "users.user",
   "pk": 2,
   "fields": {
-    "password": "pbkdf2_sha256$24000$6U30Oze9aPk8$0rtJbhmrEskCSk8WPxaO9cWX9jd4VOwnl7SKPLa3xUQ=",
-    "last_login": "2016-07-20T18:22:20.317Z",
+    "password": "pbkdf2_sha256$24000$rrJCALNZ9n0k$Effl8NOsM/ZlEWxo2mArxGM1n0BAgeq35wYPaivPw/E=",
+    "last_login": "2016-07-29T11:54:23.541Z",
     "is_superuser": false,
-    "username": "teste",
+    "username": "Mauro",
     "first_name": "",
     "last_name": "",
-    "email": "teste@teste.com",
+    "email": "mauro.rebelo@biobureau.com.br",
     "is_staff": false,
     "is_active": true,
-    "date_joined": "2016-07-20T18:21:53.468Z",
+    "date_joined": "2016-07-22T19:11:55.419Z",
     "name": "",
     "groups": [],
     "user_permissions": []
@@ -53,6 +63,16 @@
   "fields": {
     "user": 1,
     "email": "raony.cardenas@biobureau.com.br",
+    "verified": true,
+    "primary": true
+  }
+},
+{
+  "model": "account.emailaddress",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "email": "mauro.rebelo@biobureau.com.br",
     "verified": true,
     "primary": true
   }
