@@ -1,8 +1,8 @@
 from celery.decorators import task
 from django.conf import settings
 
-import zipfile
+from analyses.models import Analysis
 
-@task(name="turn_on_machine")
-def turn_on_machine(project_id):
+@task(name="start_analysis")
+def StartAnalysis(analysis_id):
     print('Finished!')

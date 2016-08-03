@@ -1,11 +1,15 @@
 from django.db import models
 from bioinfo_biobureau.users.models import User
 
+from projects.models import Project
+
 # Create your models here.
 class Analysis(models.Model):
-    name = models.CharField(max_length=255)
     user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    name = models.CharField(max_length=255)
     description = models.TextField()
+    analysis_type = models.TextField()
 
 
 class Machine(models.Model):

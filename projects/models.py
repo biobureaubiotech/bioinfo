@@ -24,6 +24,9 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+class File(models.Model):
+    user = models.ForeignKey(Project)
+    name = models.TextField()
 
 def alignment_file_name(instance, filename):
     return 'alignments/%s/%s' % (instance.project.id, filename)

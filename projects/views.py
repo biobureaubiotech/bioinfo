@@ -11,12 +11,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from projects.forms import UploadForm
-from projects.models import Project, AlignmentFile, AlignmentHit
+from projects.models import Project, AlignmentFile, AlignmentHit, File
 
 from projects.tasks import import_alignment
 from django.contrib import messages
 from django.db import transaction
 from django.conf import settings
+
+import boto3
 
 import os
 
@@ -125,4 +127,26 @@ def action(request):
 
     return redirect(request.META.get('HTTP_REFERER'))
     # return redirect(reverse('project-detail', kwargs={'pk': project_id}))
+
+def import_files(request, project_id):
+    #get files form S3 Folder
+    
+    if request.method == 'POST':
+        
+        print()
+
+    else:
+        
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket('bioinfobiobureau')
+        files = []
+        for key in bucket.objects.filter(Prefix='input/'):
+            files.append(key.key)
+        files = files[1:]
+
+        # form = ImportFileForm()
+        form = []
+
+
+    return render(request, 'projects/file_import.html', {'form': form, 'files':files})
 
