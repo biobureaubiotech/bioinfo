@@ -1,0 +1,40 @@
+<br>
+<h2>Instances</h2>
+
+<form action="{% url 'instance-action' project.id %}" method="POST" id="instance_form">
+{% csrf_token %}
+<input type="hidden" name="action" value="">
+    <div class="row-fluid">
+      <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_instance_form("stop")'>Stop</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_instance_form("terminate")'>Terminate</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_instance_form("delete")'>Delete</a>
+      </div>
+    </div>
+    <br>
+    <table class="table">
+        <tr>
+            <th>#<input type="checkbox" id="select_all"></th>
+            <th>Instance ID</th>
+            <th>IP</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Started</th>
+            <th>Finished</th>
+            <th>Time Taken</th>
+        </tr>
+        {% for instance in instances %}  
+        <tr>
+            <td><input type="checkbox" name="instances" value="{{ instance.id }}"></td>
+            <td>{{instance.instance_id}}</td>
+            <td>{{instance.ip_address}}</td>
+            <td>{{instance.status}}</td>
+            <td>{{instance.created_date}}</td>
+            <td>{{instance.started}}</td>
+            <td>{{instance.finished}}</td>
+            <td>{{instance.time_taken}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</form>

@@ -1,6 +1,6 @@
 from django.http import Http404
 
-from analyses.models import Analysis, Task
+from analyses.models import Analysis#, Task
 from analyses.forms import AnalysisForm
 from analyses.tasks import StartAnalysis
 

@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from bioinfo_biobureau.users.models import User
-
+from django.contrib.postgres.fields import JSONField
 # Create your models here.
 
 class Project(models.Model):
@@ -61,3 +61,34 @@ class AlignmentHit(models.Model):
     RepID = models.TextField()
     Cluster_Name = models.TextField()
     go_terms = models.TextField()
+
+class Task(models.Model):
+    project = models.ForeignKey(Project)
+    user = models.ForeignKey(User)
+
+    name = models.TextField()
+    task_type = models.TextField()
+    task_data = JSONField()
+    description = models.TextField()
+    status = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
+    modified_date = models.DateTimeField(auto_now=True)
+
+    started = models.DateTimeField(null=True)
+    finished = models.DateTimeField(null=True)
+    time_taken = models.TimeField(null=True)
+
+class Instance(models.Model):
+    project = models.ForeignKey(Project)
+    user = models.ForeignKey(User)
+
+    instance_id = models.TextField()
+    ip_address = models.TextField()
+    status = models.TextField()
+    
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
+    modified_date = models.DateTimeField(auto_now=True)
+
+    started = models.DateTimeField(null=True)
+    finished = models.DateTimeField(null=True)
+    

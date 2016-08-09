@@ -1,0 +1,38 @@
+<br>
+<h2>Tasks</h2>
+
+<form action="{% url 'task-action' project.id %}" method="POST" id="task_form">
+{% csrf_token %}
+<input type="hidden" name="action" value="">
+    <div class="row-fluid">
+      <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
+           
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_task_form("rerun")'>ReRun</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_task_form("delete")'>Delete</a>
+      </div>
+    </div>
+    <br>
+    <table class="table">
+        <tr>
+            <th>#<input type="checkbox" id="task_select_all"></th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Started</th>
+            <th>Finished</th>
+            <th>Time Taken</th>
+        </tr>
+        {% for task in tasks %}  
+        <tr>
+            <td><input type="checkbox" name="tasks" value="{{ task.id }}"></td>
+            <td>{{task.name}}</td>
+            <td>{{task.status}}</td>
+            <td>{{task.created_date}}</td>
+            <td>{{task.started}}</td>
+            <td>{{task.finished}}</td>
+            <td>{{task.time_taken}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</form>

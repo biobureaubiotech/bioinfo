@@ -1,19 +1,120 @@
 from celery.decorators import task
 from django.conf import settings
 
-from projects.models import AlignmentFile, AlignmentHit
+from projects.models import AlignmentFile, AlignmentHit, Project, Instance
+
+from projects.models import Task as ProjectTask
 
 import zipfile
 
 from django import db
 from django.db import transaction
 
-@task(name="sum_two_numbers")
-def add(x, y):
-    print('HELLO TASKS')
-    print(x + y)
-    return x + y
+import sys
+import os
 
+from scripts.download_basespace import GetBaseSpaceLinks
+
+import boto3
+
+@task(name="process_task")
+def process_task(project_task_id):
+    
+    project_task = ProjectTask.objects.get(pk=project_task_id)
+    
+    if project_task.task_type == 'import_from_basespace':
+        import_files_from_basespace(project_task.id)
+
+
+def import_files_from_basespace(task_id):
+
+    print('Import Files from BaseSpace')
+    project_task = ProjectTask.objects.get(pk=task_id)
+
+    start_instance(project_task.project.id)
+    # projects = project_task.task_data['projects']
+    # print('Import FILE', task_id, project_task, projects)
+    
+    # #download from basespace
+    # basespace = GetBaseSpaceLinks(projects)
+    # files = basespace.getfilelinks()
+
+    #turn on machine
+    #download data from BaseSpace
+    #upload data to S3
+    #turn off machine
+
+
+def start_instance(project_id):
+
+    print('Starting Instance...')
+
+    project = Project.objects.get(pk=project_id)
+
+    instance = Instance()
+    instance.project = project
+    instance.user = project.user
+    instance.status = 'new'
+    instance.save()
+
+    ec2 = boto3.resource('ec2')
+    instances = ec2.create_instances(
+        ImageId='ami-2d39803a', 
+        MinCount=1, 
+        MaxCount=1,
+        InstanceType='t2.nano',
+        KeyName='bioinfo_biobureau',
+        BlockDeviceMappings=[
+            {
+                # 'VirtualName': 'BioinfoHD',
+                'DeviceName': '/dev/sda1',#xvdb
+                'Ebs': {
+
+                    'VolumeSize': 100,
+                    'DeleteOnTermination': True,
+                    'VolumeType': 'gp2',
+                },
+                # 'NoDevice': 'string'
+            },
+        ],
+        )
+    aws_instance = instances[0]
+    tag = aws_instance.create_tags(
+        Tags=[
+            {
+                'Key': 'Name',
+                'Value': 'BioinfoImporter'
+            },
+        ]
+    )
+    instance.instance_id = aws_instance.instance_id
+    instance.ip_address = aws_instance.public_ip_address
+    instance.status = 'running'
+    instance.save()
+    print('Instance Started!!!')
+    # return(instance)
+
+@task(name="stop_instance")
+def stop_instance(instance_id):
+    print('Stopping Instance...', instance_id)
+    instance = Instance.objects.get(pk=instance_id)
+    aws_instanceid = instance.instance_id
+    ec2 = boto3.resource('ec2')
+    ids = [aws_instanceid]
+    ec2.instances.filter(InstanceIds=ids).stop()
+    instance.status = 'stopped'
+    instance.save()
+
+@task(name="terminate_instance")
+def terminate_instance(instance_id):
+    print('Terminating Instance...', instance_id)
+    instance = Instance.objects.get(pk=instance_id)
+    aws_instanceid = instance.instance_id
+    ec2 = boto3.resource('ec2')
+    ids = [aws_instanceid]
+    ec2.instances.filter(InstanceIds=ids).terminate()
+    instance.status = 'terminated'
+    instance.save()
 
 @task(name="import_alignment_to_database")
 def import_alignment(alignment_file_id):

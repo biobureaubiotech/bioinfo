@@ -110,3 +110,96 @@ https://aws.amazon.com/blogs/compute/scheduling-ssh-jobs-using-aws-lambda/
 http://stackoverflow.com/questions/6025546/issues-trying-to-ssh-into-a-fresh-ec2-instance-with-paramiko
 
 python manage.py startapp analyses
+
+
+
+Client Id
+1fdcf4268f714b9b97e3ecb68b75be19
+Client Secret
+6d3db5904e914faa8a2ba7838215400e
+
+
+Access Token
+15a4f67f257f4463bf70c2eec0875a7e
+
+using trsuty is best to install
+
+We are excited to announce BaseMount v0.14 with Trash control.
+
+
+This update includes:
+
+    Move-to-trash and restore-from-trash
+    Refresh command
+    New bm-cmd tool, a shorter alias for basemount-cmd
+    Moved passphrase encryption to --passphrase
+
+As always, you can install or update BaseMount using the command line:
+
+sudo bash -c "$(curl -L https://basemount.basespace.illumina.com/install)" 
+
+More details can be found on the following pages:
+
+    Blog post
+    BaseMount website
+    BaseMount help page & documentation
+
+https://basemount.basespace.illumina.com/
+
+copy file from basespace to s3
+
+PlataformaBioinfo
+Create a computer to be the worker!
+Connect Remotely to database!
+
+psql -p 5432 -h example.cs945smhrv09.us-west-2.rds.amazonaws.com -U example example
+
+Configure /etc/postgresql/9.1/main/pg_hba.conf to allow connection from a domain of VPC
+psql -h ec2-xxx-xx-xxx-xxx.compute-1.amazonaws.com -d <database_name> -U <username>  
+
+I Found the resolution to this problem. Two things are required.
+
+    Use a text editor to modify pg_hba.conf. Locate the line host all all 127.0.0.1/0 md5. Immediately below it, add this new line: host all all 0.0.0.0/0 md5
+
+    Editing the PostgreSQL postgresql.conf file:
+
+    Use a text editor to modify postgresql.conf. Locate the line that starts with #listen_addresses = 'localhost'. Uncomment the line by deleting the #, and change localhost to . The line should now look like this: listen_addresses = '' # what IP address(es) to listen on;.
+
+Now Just restart your postgres service and it will connect
+
+Secondary private IPs
+  
+Scheduled events
+No scheduled events
+VPC ID
+vpc-67cb2e02
+
+Private IPs
+172.31.26.40
+Public IP
+54.173.21.14
+
+GBS_MR3
+
+You are using the following Amazon EC2 resources in the US East (N. Virginia) region:
+2 Running Instances
+0 Dedicated Hosts
+2 Volumes
+8 Key Pairs
+0 Placement Groups
+
+1 Elastic IPs
+8 Snapshots
+0 Load Balancers
+18 Security Groups
+
+from fabric.api import env, run
+
+env.hosts = ['host1@example.com', 'host2@example.com']
+
+def reload():
+    """ Reload Apache """
+    run("sudo /etc/init.d/apache2 reload")
+
+
+http://docs.python-guide.org/en/latest/scenarios/admin/

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Import files from BaseSpace</h2>
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+    <p>
+    <label for="id_project">Select Project:</label> 
+    <select name="projects" multiple>
+    {% for project in projects %}
+        <option value="{{project}}">{{project}}</option>
+    {% endfor %}
+    </select>
+    
+    </p>
+
+    <input type="submit" value="Import Files" />
+    </form>
+
+{% endblock %}
+
+
+

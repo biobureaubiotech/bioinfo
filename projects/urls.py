@@ -14,7 +14,11 @@ urlpatterns = [
     url(r'(?P<pk>[0-9]+)/upload/$', UploadView.as_view(), name='project-upload'),
 
     url(r'^(?P<project_id>[0-9]+)/import/$', views.import_files, name='project-import'),
+    url(r'^(?P<project_id>[0-9]+)/import_from_basespace/$', views.import_files_from_basespace, name='project-import-from-basespace'),
+
 
     url(r'^action/$', views.action, name='project-action'),
+    url(r'^(?P<project_id>[0-9]+)/task_action/$', views.task_action, name='task-action'),
+    url(r'^(?P<project_id>[0-9]+)/instance_action/$', views.instance_action, name='instance-action'),
 
 ]

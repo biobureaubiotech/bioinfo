@@ -6,9 +6,11 @@
     
     <div class="row-fluid">
       <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
-           <a href="{% url 'project-import' project.id  %}" class="btn btn-primary">Import FASTQ from S3</a>
+           <a href="{% url 'project-import' project.id  %}" class="btn btn-primary">Import Files from S3</a>
+           <a href="{% url 'project-import-from-basespace' project.id  %}" class="btn btn-primary">Import Files from BaseSpace</a>
 
            <a href="{% url 'analysis-add' project.id  %}" class="btn btn-primary">New Analysis</a>
+           <a href="{% url 'project-update' project.id  %}" class="btn btn-primary">Edit Project</a>
            
       </div>
     </div>
@@ -20,10 +22,13 @@
     <a class="nav-link active" href="#main" role="tab" data-toggle="tab">Main</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#buzz" role="tab" data-toggle="tab">Files</a>
+    <a class="nav-link" href="#files" role="tab" data-toggle="tab">Files</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#references" role="tab" data-toggle="tab">Tasks</a>
+    <a class="nav-link" href="#instances" role="tab" data-toggle="tab">Instances</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#tasks" role="tab" data-toggle="tab">Tasks</a>
   </li>
 </ul>
 
@@ -39,8 +44,16 @@
     </tr>
     </table>
   </div>
-  <div role="tabpanel" class="tab-pane fade" id="buzz">Files</div>
-  <div role="tabpanel" class="tab-pane fade" id="references">Tasks</div>
+  <div role="tabpanel" class="tab-pane fade" id="files">Files</div>
+  <div role="tabpanel" class="tab-pane fade" id="instances">
+    {% include "projects/project_instances.html" %}  
+
+  </div>
+  <div role="tabpanel" class="tab-pane fade" id="tasks">
+
+  {% include "projects/project_tasks.html" %}  
+  
+  </div>
 </div>
 
     
@@ -85,8 +98,8 @@
     </table>
 
     </form>
- -->
 
+ -->
 
 {% endblock %}
 
@@ -94,7 +107,6 @@
 
 <script type="text/javascript">
 $(document).ready(function(){ 
-
     $('#select_all').change(function() {
         var checkboxes = $(this).closest('form').find(':checkbox');
         if($(this).is(':checked')) {
@@ -104,6 +116,14 @@ $(document).ready(function(){
         }
     });
 
+    $('#task_select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
 });
 
 function submitForm(action) {
@@ -111,7 +131,14 @@ function submitForm(action) {
         $("#alignments_form").submit();
 }
 
+function submit_task_form(action) {
+        $('input[name="action"]').val(action);
+        $("#task_form").submit();
+}
+function submit_instance_form(action) {
+        $('input[name="action"]').val(action);
+        $("#instance_form").submit();
+}
 </script>
-
 
 {% endblock extra_javascript %}
