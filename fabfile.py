@@ -29,5 +29,5 @@ def deploy_worker():
 
 def worker():
     env.hosts = ['bioworker']
-def web:
+def web():
     env.hosts = ['biobureau']    
