@@ -1,4 +1,4 @@
-from fabric.api import run, local, env
+from fabric.api import run, local, env, cd
 
 env.hosts = ['biobureau']
 
