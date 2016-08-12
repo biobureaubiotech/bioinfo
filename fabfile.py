@@ -1,5 +1,6 @@
-from fabric.api import run, local
+from fabric.api import run, local, env
 
+env.hosts = ['biobureau']
 
 def reset_db():
     local('uname -s')
@@ -16,6 +17,9 @@ def reset():
     local('./manage.py migrate')
     restore_users()
 
-def deploy_webserver():
-    env.hosts = ['biobureau']
-    run('pwd')
+def deploy_web():
+    
+    with cd('bioinfo_biobureau'):
+        run('git pull')
+
+    run('sudo systemctl restart gunicorn')
