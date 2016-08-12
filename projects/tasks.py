@@ -31,15 +31,19 @@ def import_files_from_basespace(task_id):
     print('Import Files from BaseSpace')
     project_task = ProjectTask.objects.get(pk=task_id)
 
-    start_instance(project_task.project.id)
-    # projects = project_task.task_data['projects']
-    # print('Import FILE', task_id, project_task, projects)
+    
+    projects = project_task.task_data['projects']
+    
     
     # #download from basespace
-    # basespace = GetBaseSpaceLinks(projects)
-    # files = basespace.getfilelinks()
+    basespace = GetBaseSpaceLinks(projects)
+    files = basespace.getfilelinks()
+
+    print('path', os.getcwd())
+    # download_path = ''
 
     #turn on machine
+    # start_instance(project_task.project.id)
     #download data from BaseSpace
     #upload data to S3
     #turn off machine

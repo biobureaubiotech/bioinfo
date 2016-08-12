@@ -1,5 +1,6 @@
 from fabric.api import run, local
 
+
 def reset_db():
     local('uname -s')
     
@@ -14,3 +15,7 @@ def reset():
     local('./manage.py makemigrations projects')
     local('./manage.py migrate')
     restore_users()
+
+def deploy_webserver():
+    env.hosts = ['biobureau']
+    run('pwd')
