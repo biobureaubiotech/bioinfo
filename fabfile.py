@@ -1,6 +1,6 @@
 from fabric.api import run, local, env, cd
 
-env.hosts = ['biobureau']
+
 
 def reset_db():
     local('uname -s')
@@ -23,6 +23,11 @@ def deploy_web():
 
     run('sudo systemctl restart gunicorn')
 def deploy_worker():
-    env.hosts = ['bioworker']    
+    
     with cd('bioinfo_biobureau'):
         run('git pull')
+
+def worker():
+    env.hosts = ['bioworker']
+def web:
+    env.hosts = ['biobureau']    
