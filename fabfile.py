@@ -18,8 +18,11 @@ def reset():
     restore_users()
 
 def deploy_web():
-    
     with cd('bioinfo_biobureau'):
         run('git pull')
 
     run('sudo systemctl restart gunicorn')
+def deploy_worker():
+    env.hosts = ['bioworker']    
+    with cd('bioinfo_biobureau'):
+        run('git pull')

@@ -40,7 +40,15 @@ def import_files_from_basespace(task_id):
     files = basespace.getfilelinks()
 
     print('path', os.getcwd())
-    # download_path = ''
+    download_path = '../work/projects/%s/tasks/%s/' (project_task.project.id, project_task.id)
+    
+    if not os.path.isdir(download_path):
+        os.makedirs(download_path)
+    os.chdir(download_path)
+
+    print('path', os.getcwd())
+
+
 
     #turn on machine
     # start_instance(project_task.project.id)
