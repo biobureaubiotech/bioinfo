@@ -31,3 +31,7 @@ def worker():
     env.hosts = ['bioworker']
 def web():
     env.hosts = ['biobureau']    
+
+#usage
+#fab worker deploy_worker 
+#fab web deploy_web 
