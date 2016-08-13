@@ -16,6 +16,7 @@ import os
 from scripts.download_basespace import GetBaseSpaceLinks
 
 import boto3
+from boto3.s3.transfer import S3Transfer
 from subprocess import call
 
 @task(name="process_task")
@@ -29,9 +30,13 @@ def process_task(project_task_id):
 
 def import_files_from_basespace(task_id):
 
-    s3 = boto3.resource('s3')
+    # s3 = boto3.resource('s3')
+    # client = boto3.client('s3', 'us-east-1')
 
-    bucket = s3.Bucket('bioinfobiobureau')
+    client = boto3.client('s3')
+    transfer = S3Transfer(client)
+
+    # bucket = s3.Bucket('bioinfobiobureau')
 
     print('Import Files from BaseSpace')
     project_task = ProjectTask.objects.get(pk=task_id)
@@ -59,8 +64,9 @@ def import_files_from_basespace(task_id):
         # output = call(command, shell=True)
         #upload to S3
         # Upload a new file
-        data = open(file, 'rb')
-        bucket.put_object(Key='input/%s' % (file), Body=data)
+        # data = open(file, 'rb')
+        # bucket.put_object(Key='input/%s' % (file), Body=data)
+        transfer.upload_file(file, 'bioinfobiobureau', 'input/%s' % (file))
         print('%s sent to S3!' % (file))
 
 
