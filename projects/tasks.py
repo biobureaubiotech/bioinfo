@@ -29,6 +29,10 @@ def process_task(project_task_id):
 
 def import_files_from_basespace(task_id):
 
+    s3 = boto3.resource('s3')
+
+    bucket = s3.Bucket('bioinfobiobureau')
+
     print('Import Files from BaseSpace')
     project_task = ProjectTask.objects.get(pk=task_id)
 
@@ -51,8 +55,13 @@ def import_files_from_basespace(task_id):
 
     #download files
     for file in files:
-        command = 'wget -O %s %s' % (file, files[file])
-        output = call(command, shell=True)
+        # command = 'wget -O %s %s' % (file, files[file])
+        # output = call(command, shell=True)
+        #upload to S3
+        # Upload a new file
+        data = open(file, 'rb')
+        bucket.put_object(Key='input/%s' % (file), Body=data)
+
 
 
     #upload files to S3
