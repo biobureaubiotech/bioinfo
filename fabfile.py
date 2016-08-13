@@ -23,7 +23,7 @@ def deploy_web():
 
     run('sudo systemctl restart gunicorn')
 def deploy_worker():
-    local('git add .;git commit -am "deploy to worker"')
+    local('git add .;git commit -am "deploy to worker;git push"')
     with cd('bioinfo_biobureau'):
         run('git pull')
 
