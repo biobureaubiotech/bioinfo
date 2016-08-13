@@ -16,6 +16,7 @@ import os
 from scripts.download_basespace import GetBaseSpaceLinks
 
 import boto3
+from subprocess import call
 
 @task(name="process_task")
 def process_task(project_task_id):
@@ -48,6 +49,13 @@ def import_files_from_basespace(task_id):
 
     print('path', os.getcwd())
 
+    #download files
+    for file in files:
+        command = 'wget %s' % (file)
+        output = call(command, shell=True)
+
+
+    #upload files to S3
 
 
     #turn on machine
