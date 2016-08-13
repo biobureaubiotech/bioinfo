@@ -51,7 +51,7 @@ def import_files_from_basespace(task_id):
 
     #download files
     for file in files:
-        command = 'wget %s' % (file)
+        command = 'wget -O %s %s' % (file, files[file])
         output = call(command, shell=True)
 
 
