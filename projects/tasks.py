@@ -61,7 +61,7 @@ def import_files_from_basespace(task_id):
         # Upload a new file
         data = open(file, 'rb')
         bucket.put_object(Key='input/%s' % (file), Body=data)
-
+        print('%s sent to S3!' % (file))
 
 
     #upload files to S3
