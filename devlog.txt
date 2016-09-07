@@ -403,6 +403,6 @@ Done
 
 Deploying BioWorker
 
-ssh ubuntu@54.81.8.235
+ssh raony@54.81.8.235
 
-bioworker 
+bioworker  
