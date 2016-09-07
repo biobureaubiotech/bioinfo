@@ -54,5 +54,5 @@ def reset_db():
     local('python manage.py runserver')
 
 #usage
-#fab worker deploy_worker 
-#fab web deploy_web 
+#fab worker deploy_worker
+#fab web deploy_web
