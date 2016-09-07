@@ -30,7 +30,7 @@ def deploy_worker():
 def worker():
     env.hosts = ['bioworker']
 def web():
-    env.hosts = ['biobureau']    
+    env.hosts = ['biobureau']
 
 def reset_db():
     

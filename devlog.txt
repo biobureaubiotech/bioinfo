@@ -266,7 +266,7 @@ ssh ubuntu@54.173.21.14
 sudo -u postgres psql -c "grant all on tablespace pg_default to raony"
 sudo -u postgres psql -c "ALTER USER raony CREATEDB"
 sudo -u postgres psql -c "DROP DATABASE bioinfo_biobureau"
-
+createdb bioinfo_biobureau
 
 s3cmd
 
@@ -393,3 +393,16 @@ http://catchenlab.life.illinois.edu/stacks/comp/process_radtags.php
 67M Sep  7 09:27 Solanum_pseudoquina.cutadapt.fastq
 
 
+Deployment
+
+python manage.py runserver 0:8000
+
+Access http://54.173.21.14:8000/
+
+Done
+
+Deploying BioWorker
+
+ssh ubuntu@54.81.8.235
+
+bioworker
