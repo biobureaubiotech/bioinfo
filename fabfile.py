@@ -55,4 +55,4 @@ def reset_db():
 
 #usage
 #fab worker deploy_worker
-#fab web deploy_web
+#fab web deploy_web 
