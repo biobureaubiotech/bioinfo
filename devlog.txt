@@ -406,3 +406,7 @@ Deploying BioWorker
 ssh raony@54.81.8.235
 
 bioworker  
+
+scp /home/raony/.s3cfg raony@bioworker:~/
+scp -r /home/raony/.aws/ raony@bioworker:~/
+scp -r /home/raony/.basespace/ raony@bioworker:~/
