@@ -28,6 +28,7 @@ def deploy_worker():
         run('git pull')
 
 def worker():
+    env.user = ['raony']
     env.hosts = ['bioworker']
 def web():
     env.hosts = ['biobureau']
