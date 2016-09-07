@@ -1,25 +1,68 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<form action="{% url 'analyses-action' %}" method="POST" id="analysis_form">
+{% csrf_token %}
+<input type="hidden" name="action" value="">
+
     <h2>Analyses</h2>
-    
+
+    <div class="row-fluid">
+      <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
+            <a href="#" class="btn btn-primary" role="button" onClick='submitForm("rerun")'>ReRun</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submitForm("delete")'>Delete</a>
+           
+      </div>
+    </div>
+    <br>
+
     <table class="table">
         <tr>
+            <th>#<input type="checkbox" id="select_all"></th>
             <th>Name</th>
+            <th>Project</th>
             <th>Analysis Type</th>            
             <th>Options</th>
         </tr>
         {% for analysis in analyses %}
-        <tr>
-            <td>{{ analysis.name }}</td>
-            <td>{{ analysis.analysis_type }}</td>
-            <td>
-                <a href="{#% url "project-detail" project.id %#}" class="btn btn-primary" role="button">View</a>
-                <a href="{#% url "project-update" project.id %#}" class="btn btn-primary" role="button">Edit</a>
-                <a href="{#% url "project-delete" project.id %#}" class="btn btn-primary" role="button">Delete</a>
-            </td>
-        </tr>
+            <tr>
+                <td><input type="checkbox" name="analyses" value="{{ analysis.id }}"></td>
+                <td>{{ analysis.name }}</td>
+                <td>{{ analysis.project }}</td>
+                <td>{{ analysis.analysis_type }}</td>
+                <td>
+                    <a href="{#% url "project-detail" project.id %#}" class="btn btn-primary" role="button">Run</a>
+                    <a href="{#% url "project-detail" project.id %#}" class="btn btn-primary" role="button">View</a>
+                    <a href="{#% url "project-update" project.id %#}" class="btn btn-primary" role="button">Edit</a>
+                    <a href="{#% url "project-delete" project.id %#}" class="btn btn-primary" role="button">Delete</a>
+                </td>
+            </tr>
         {% endfor %}
     </table>
     
 {% endblock %}
+
+
+{% block extra_javascript %}
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+    $('#select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
+
+});
+
+function submitForm(action) {
+        $('input[name="action"]').val(action);
+        $("#analysis_form").submit();
+}
+</script>
+
+{% endblock extra_javascript %}

@@ -4,29 +4,42 @@ from django.db import models
 from bioinfo_biobureau.users.models import User
 from django.contrib.postgres.fields import JSONField
 # Create your models here.
+# from analyses.models import Analysis
 
 class Project(models.Model):
     name = models.CharField(max_length=255)
     user = models.ForeignKey(User)
     description = models.TextField()
+    prefix = models.CharField(max_length=255)
 
-    ALIGNER_CHOICES = (
-        ('bwa', 'BWA'),
-        ('diamond', 'DIAMOND'),
-    )
+    # ALIGNER_CHOICES = (
+    #     ('bwa', 'BWA'),
+    #     ('diamond', 'DIAMOND'),
+    # )
 
-    aligner = models.CharField(
-        max_length=255,
-        choices=ALIGNER_CHOICES
-    )
+    # aligner = models.CharField(
+    #     max_length=255,
+    #     choices=ALIGNER_CHOICES
+    # )
     # database = 
 
     def __str__(self):
         return self.name
 
 class File(models.Model):
-    user = models.ForeignKey(Project)
+    
+    project = models.ForeignKey(Project)
+    user = models.ForeignKey(User)
+    filetype = models.CharField(max_length=255)
     name = models.TextField()
+
+    key = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True, editable=False)
+    modified_date = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+
 
 def alignment_file_name(instance, filename):
     return 'alignments/%s/%s' % (instance.project.id, filename)
@@ -77,18 +90,3 @@ class Task(models.Model):
     started = models.DateTimeField(null=True)
     finished = models.DateTimeField(null=True)
     time_taken = models.TimeField(null=True)
-
-class Instance(models.Model):
-    project = models.ForeignKey(Project)
-    user = models.ForeignKey(User)
-
-    instance_id = models.TextField()
-    ip_address = models.TextField()
-    status = models.TextField()
-    
-    created_date = models.DateTimeField(auto_now_add=True, editable=False)
-    modified_date = models.DateTimeField(auto_now=True)
-
-    started = models.DateTimeField(null=True)
-    finished = models.DateTimeField(null=True)
-    

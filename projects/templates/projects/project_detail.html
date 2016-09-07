@@ -25,6 +25,9 @@
     <a class="nav-link" href="#files" role="tab" data-toggle="tab">Files</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link" href="#analyses" role="tab" data-toggle="tab">Analyses</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link" href="#instances" role="tab" data-toggle="tab">Instances</a>
   </li>
   <li class="nav-item">
@@ -44,10 +47,14 @@
     </tr>
     </table>
   </div>
-  <div role="tabpanel" class="tab-pane fade" id="files">Files</div>
+  <div role="tabpanel" class="tab-pane fade" id="files">
+    {% include "projects/project_files.html" %}
+  </div>
+  <div role="tabpanel" class="tab-pane fade" id="analyses">
+    {% include "projects/project_analyses.html" %}  
+  </div>
   <div role="tabpanel" class="tab-pane fade" id="instances">
     {% include "projects/project_instances.html" %}  
-
   </div>
   <div role="tabpanel" class="tab-pane fade" id="tasks">
 
@@ -124,6 +131,26 @@ $(document).ready(function(){
             checkboxes.prop('checked', false);
         }
     });
+
+    $('#instance_select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
+
+    $('#analyses_select_all').change(function() {
+        var checkboxes = $(this).closest('form').find(':checkbox');
+        if($(this).is(':checked')) {
+            checkboxes.prop('checked', true);
+        } else {
+            checkboxes.prop('checked', false);
+        }
+    });
+    
+    
 });
 
 function submitForm(action) {
@@ -134,6 +161,10 @@ function submitForm(action) {
 function submit_task_form(action) {
         $('input[name="action"]').val(action);
         $("#task_form").submit();
+}
+function submit_analysis_form(action) {
+        $('input[name="action"]').val(action);
+        $("#analyses_form").submit();
 }
 function submit_instance_form(action) {
         $('input[name="action"]').val(action);

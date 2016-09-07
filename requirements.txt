@@ -1,3 +1,4 @@
 Fabric3
 django-celery
 sqlalchemy
+boto3

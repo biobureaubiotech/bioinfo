@@ -1,0 +1,38 @@
+<br>
+<h2>Analyses</h2>
+
+<form action="{% url 'analysis-action' project.id %}" method="POST" id="analyses_form">
+{% csrf_token %}
+<input type="hidden" name="action" value="">
+    <div class="row-fluid">
+      <div class="span6 pull-right" style="text-align:right;margin-right:50px;">
+           
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_analysis_form("rerun")'>ReRun</a>
+           <a href="#" class="btn btn-primary" role="button" onClick='submit_analysis_form("delete")'>Delete</a>
+      </div>
+    </div>
+    <br>
+    <table class="table">
+        <tr>
+            <th>#<input type="checkbox" id="analyses_select_all"></th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Started</th>
+            <th>Finished</th>
+            <th>Time Taken</th>
+        </tr>
+        {% for analysis in analyses %}  
+        <tr>
+            <td><input type="checkbox" name="analyses" value="{{ analysis.id }}"></td>
+            <td>{{analysis.name}}</td>
+            <td>{{analysis.status}}</td>
+            <td>{{analysis.created_date}}</td>
+            <td>{{analysis.started}}</td>
+            <td>{{analysis.finished}}</td>
+            <td>{{analysis.time_taken}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</form>

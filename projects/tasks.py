@@ -1,9 +1,10 @@
 from celery.decorators import task
 from django.conf import settings
 
-from projects.models import AlignmentFile, AlignmentHit, Project, Instance
+from projects.models import AlignmentFile, AlignmentHit, Project, File
 
 from projects.models import Task as ProjectTask
+from analyses.models import Instance
 
 import zipfile
 
@@ -30,20 +31,17 @@ def process_task(project_task_id):
 
 def import_files_from_basespace(task_id):
 
-    # s3 = boto3.resource('s3')
-    # client = boto3.client('s3', 'us-east-1')
-
+    s3 = boto3.resource('s3')
     client = boto3.client('s3')
     transfer = S3Transfer(client)
 
-    # bucket = s3.Bucket('bioinfobiobureau')
+    bucket = s3.Bucket('bioinfobiobureau')
 
     print('Import Files from BaseSpace')
     project_task = ProjectTask.objects.get(pk=task_id)
 
     
     projects = project_task.task_data['projects']
-    
     
     # #download from basespace
     basespace = GetBaseSpaceLinks(projects)
@@ -60,14 +58,27 @@ def import_files_from_basespace(task_id):
 
     #download files
     for file in files:
-        # command = 'wget -O %s %s' % (file, files[file])
-        # output = call(command, shell=True)
+        #check if file exists
+        if not os.path.isfile(file):
+            command = 'wget -O %s %s' % (file, files[file])
+            output = call(command, shell=True)
+
         #upload to S3
+
+        key ='input/%s' % (file)
         # Upload a new file
-        # data = open(file, 'rb')
-        # bucket.put_object(Key='input/%s' % (file), Body=data)
-        transfer.upload_file(file, 'bioinfobiobureau', 'input/%s' % (file))
-        print('%s sent to S3!' % (file))
+        objs = list(bucket.objects.filter(Prefix=key))
+        if len(objs) > 0 and objs[0].key == key:
+            print("Exists!")
+        else:
+            print("Doesn't exist")
+            transfer.upload_file(file, 'bioinfobiobureau', key)
+            print('%s sent to S3!' % (file))
+            #create File object
+        file_obj = File()
+        file_obj.user = project_task.user
+        file_obj.name = file
+        file_obj.save()
 
 
     #upload files to S3
@@ -80,54 +91,84 @@ def import_files_from_basespace(task_id):
     #turn off machine
 
 
-def start_instance(project_id):
+def add_prefix(file_id):
+    print('Adding Prefix')
+    file = File.objects.get(pk=file_id)
+    
 
-    print('Starting Instance...')
 
-    project = Project.objects.get(pk=project_id)
+# def start_instance(project_id):
 
-    instance = Instance()
-    instance.project = project
-    instance.user = project.user
-    instance.status = 'new'
-    instance.save()
+#     print('Starting Instance...')
 
+#     project = Project.objects.get(pk=project_id)
+
+#     instance = Instance()
+#     instance.project = project
+#     instance.user = project.user
+#     instance.status = 'new'
+#     instance.save()
+
+#     ec2 = boto3.resource('ec2')
+#     instances = ec2.create_instances(
+#         ImageId='ami-2d39803a', 
+#         MinCount=1, 
+#         MaxCount=1,
+#         InstanceType='t2.nano',
+#         KeyName='bioinfo_biobureau',
+#         BlockDeviceMappings=[
+#             {
+#                 # 'VirtualName': 'BioinfoHD',
+#                 'DeviceName': '/dev/sda1',#xvdb
+#                 'Ebs': {
+
+#                     'VolumeSize': 100,
+#                     'DeleteOnTermination': True,
+#                     'VolumeType': 'gp2',
+#                 },
+#                 # 'NoDevice': 'string'
+#             },
+#         ],
+#         )
+#     aws_instance = instances[0]
+#     tag = aws_instance.create_tags(
+#         Tags=[
+#             {
+#                 'Key': 'Name',
+#                 'Value': 'BioinfoImporter'
+#             },
+#         ]
+#     )
+#     instance.instance_id = aws_instance.instance_id
+#     instance.ip_address = aws_instance.public_ip_address
+#     instance.status = 'running'
+#     instance.save()
+#     print('Instance Started!!!')
+#     # return(instance)
+
+
+@task(name="start_instance")
+def start_instance(instance_id):
+    print('Starting Instance...', instance_id)
+    instance = Instance.objects.get(pk=instance_id)
+    aws_instanceid = instance.instance_id
     ec2 = boto3.resource('ec2')
-    instances = ec2.create_instances(
-        ImageId='ami-2d39803a', 
-        MinCount=1, 
-        MaxCount=1,
-        InstanceType='t2.nano',
-        KeyName='bioinfo_biobureau',
-        BlockDeviceMappings=[
-            {
-                # 'VirtualName': 'BioinfoHD',
-                'DeviceName': '/dev/sda1',#xvdb
-                'Ebs': {
-
-                    'VolumeSize': 100,
-                    'DeleteOnTermination': True,
-                    'VolumeType': 'gp2',
-                },
-                # 'NoDevice': 'string'
-            },
-        ],
-        )
-    aws_instance = instances[0]
-    tag = aws_instance.create_tags(
-        Tags=[
-            {
-                'Key': 'Name',
-                'Value': 'BioinfoImporter'
-            },
-        ]
-    )
-    instance.instance_id = aws_instance.instance_id
+    ids = [aws_instanceid]
+    ec2.instances.filter(InstanceIds=ids).start()
+    instances = ec2.instances.filter(InstanceIds=ids)
+    aws_instance = list(instances)[0]
+    aws_instance.wait_until_running()
+    instances = ec2.instances.filter(InstanceIds=ids)
+    aws_instance = list(instances)[0]
+    print(aws_instance)
+    print(dir(aws_instance))
+    print(aws_instance.public_ip_address)
+    print(aws_instance.state)
     instance.ip_address = aws_instance.public_ip_address
     instance.status = 'running'
     instance.save()
     print('Instance Started!!!')
-    # return(instance)
+
 
 @task(name="stop_instance")
 def stop_instance(instance_id):

@@ -11,13 +11,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from projects.forms import UploadForm
-from projects.models import Project, AlignmentFile, AlignmentHit, File, Task, Instance
+from projects.models import Project, AlignmentFile, AlignmentHit, File, Task
 
-from projects.tasks import import_alignment, process_task, stop_instance, terminate_instance
+from projects.tasks import import_alignment, process_task, start_instance, stop_instance, terminate_instance
+
+from analyses.tasks import StartAnalysis
+
 from django.contrib import messages
 from django.db import transaction
 from django.conf import settings
 
+from analyses.models import Analysis, Instance
 import boto3
 
 import os
@@ -32,7 +36,7 @@ class ProjectList(LoginRequiredMixin, ListView):
 
 class ProjectCreate(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ['name', 'description', 'aligner']
+    fields = ['name', 'description', 'prefix']
     success_url = reverse_lazy('project-list')
 
     def form_valid(self, form):
@@ -63,7 +67,9 @@ class ProjectDetail(LoginRequiredMixin, DetailView):
         # Add in a QuerySet of all the books
         context['alignment_files'] = AlignmentFile.objects.filter(project=context['project']).order_by('name')
         context['tasks'] = Task.objects.filter(project=context['project']).order_by('name')
+        context['files'] = File.objects.filter(project=context['project']).order_by('name')
         context['instances'] = Instance.objects.filter(project=context['project'])
+        context['analyses'] = Analysis.objects.filter(project=context['project'])
 
         return context
 
@@ -152,6 +158,27 @@ def task_action(request, project_id):
 
     return redirect('project-detail', project_id)
 
+def analysis_action(request, project_id):
+    
+    if request.method == 'POST':
+    
+        action = request.POST.get('action')
+        analyses = request.POST.getlist('analyses')
+
+        if action == 'rerun':
+            for analsyis_id in analyses:
+                analysis = Analysis.objects.get(pk=analsyis_id)
+                StartAnalysis.delay(analysis.id)
+            messages.add_message(request, messages.INFO, 'Analysis will be executed again!')
+
+        elif action == 'delete':
+            for analsyis_id in analyses:
+                analysis = Analysis.objects.get(pk=analsyis_id)
+                analysis.delete()
+            
+            messages.add_message(request, messages.INFO, 'Analysis were deleted!')
+
+    return redirect('project-detail', project_id)
 
 def instance_action(request, project_id):
     
@@ -159,7 +186,12 @@ def instance_action(request, project_id):
     
         action = request.POST.get('action')
         instances = request.POST.getlist('instances')
-
+        print(request.POST)
+        print('instances',instances)
+        if action == 'start':
+            for instance_id in instances:
+                start_instance.delay(instance_id)
+            messages.add_message(request, messages.INFO, 'Instances are being started!')
         if action == 'stop':
             for instance_id in instances:
                 stop_instance.delay(instance_id)
@@ -182,14 +214,33 @@ def import_files(request, project_id):
     #get files form S3 Folder
     
     if request.method == 'POST':
-        action = request.POST.get('files')
+
+        selected_files = request.POST.getlist('files')
+        for file in selected_files:
+            print(file)
+            file_obj = File()
+            file_obj.project = Project.objects.get(pk=project_id)
+            file_obj.user = request.user
+            file_obj.name = file
+            file_obj.key = file
+
+            file_obj.save()
+
+        return redirect('project-detail', project_id)
+
+        # form = ImportFileForm(request.data)
+
+
+
+
+
     else:
         
         s3 = boto3.resource('s3')
         bucket = s3.Bucket('bioinfobiobureau')
         files = []
         for key in bucket.objects.filter(Prefix='input/'):
-            files.append(key.key)
+            files.append(key.key.replace('input/', ''))
         files = files[1:]
 
         # form = ImportFileForm()

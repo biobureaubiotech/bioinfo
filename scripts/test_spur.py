@@ -4,7 +4,7 @@ import spur
 
 shell = spur.SshShell(
     hostname="54.173.21.14",
-    username="raony",
+    username="ubuntu",
     
 )
 ## private_key_file="path/to/private.key"

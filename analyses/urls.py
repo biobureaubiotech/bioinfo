@@ -7,10 +7,13 @@ urlpatterns = [
     url(r'^tasks/$', views.task_list, name='task-list'),
 
     url(r'add/(?P<project_id>[0-9]+)/$', views.add, name='analysis-add'),
+    url(r'add-gbs-se/(?P<project_id>[0-9]+)/$', views.add_gbs_se, name='analysis-add-gbs-se'),
+
     # url(r'(?P<pk>[0-9]+)/update/$', ProjectUpdate.as_view(), name='project-update'),
     # url(r'(?P<pk>[0-9]+)/$', ProjectDetail.as_view(), name='project-detail'),
     # url(r'(?P<pk>[0-9]+)/delete/$', ProjectDelete.as_view(), name='project-delete'),
     # url(r'(?P<pk>[0-9]+)/upload/$', UploadView.as_view(), name='project-upload'),
 
-    # url(r'^action/$', views.action, name='project-action'),
+    url(r'^action/$', views.action, name='analyses-action'),
+    
 ]

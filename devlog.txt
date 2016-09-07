@@ -2,7 +2,6 @@ Debug with sqlparse
 
 
 psql -d template1 -U postgres
-
 CREATE DATABASE bioinfo_biobureau;
 CREATE USER raony WITH PASSWORD 'raony';
 GRANT ALL PRIVILEGES ON DATABASE bioinfo_biobureau to raony;
@@ -203,3 +202,194 @@ def reload():
 
 
 http://docs.python-guide.org/en/latest/scenarios/admin/
+
+Add prefixes VR1, VR2 e VR3
+
+
+createdb: database creation failed: ERROR:  permission denied to create database
+
+sudo -u postgres psql -c "grant all on tablespace pg_default to raony"
+
+sudo -u postgres psql -c "ALTER USER raony CREATEDB"
+Worked!
+
+
+Deploying
+
+
+sudo apt-get install postgresql python3-dev libpq-dev virtualenvwrapper
+source /etc/bash_completion.d/virtualenvwrapper
+mkvirtualenv -p /usr/bin/python3 biobureau
+
+cd scripts/basespace/src
+
+python setup.py install
+pip install -r requirements.txt 
+pip install -r requirements/local.txt 
+pip install sqlparse==0.1.19
+
+
+psql -d template1 -U postgres
+CREATE DATABASE bioinfo_biobureau;
+CREATE USER raony WITH PASSWORD 'raony';
+GRANT ALL PRIVILEGES ON DATABASE bioinfo_biobureau to raony;
+
+python manage.py migrate
+python manage.py loaddata fixtures/users.json
+python manage.py runserver
+
+
+AWS S3 keys!
+
+Copy .aws .basespace
+
+
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_id', 'ami_launch_index', 'architecture', 'attach_classic_link_vpc', 'attach_volume', 'block_device_mappings', 'classic_address', 'client_token', 'console_output', 'create_image', 'create_tags', 'delete_tags', 'describe_attribute', 'detach_classic_link_vpc', 'detach_volume', 'ebs_optimized', 'ena_support', 'get_available_subresources', 'hypervisor', 'iam_instance_profile', 'id', 'image', 'image_id', 'instance_id', 'instance_lifecycle', 'instance_type', 'kernel_id', 'key_name', 'key_pair', 'launch_time', 'load', 'meta', 'modify_attribute', 'monitor', 'monitoring', 'network_interfaces', 'network_interfaces_attribute', 'password_data', 'placement', 'placement_group', 'platform', 'private_dns_name', 'private_ip_address', 'product_codes', 'public_dns_name', 'public_ip_address', 'ramdisk_id', 'reboot', 'reload', 'report_status', 'reset_attribute', 'reset_kernel', 'reset_ramdisk', 'reset_source_dest_check', 'root_device_name', 'root_device_type', 'security_groups', 'source_dest_check', 'spot_instance_request_id', 'sriov_net_support', 'start', 'state', 'state_reason', 'state_transition_reason', 'stop', 'subnet', 'subnet_id', 'tags', 'terminate', 'unmonitor', 'virtualization_type', 'volumes', 'vpc', 'vpc_addresses', 'vpc_id', 'wait_until_exists', 'wait_until_running', 'wait_until_stopped', 'wait_until_terminated']
+
+Test connection to new host
+
+['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_id', 'ami_launch_index', 'architecture', 'attach_classic_link_vpc', 'attach_volume', 'block_device_mappings', 'classic_address', 'client_token', 'console_output', 'create_image', 'create_tags', 'delete_tags', 'describe_attribute', 'detach_classic_link_vpc', 'detach_volume', 'ebs_optimized', 'ena_support', 'get_available_subresources', 'hypervisor', 'iam_instance_profile', 'id', 'image', 'image_id', 'instance_id', 'instance_lifecycle', 'instance_type', 'kernel_id', 'key_name', 'key_pair', 'launch_time', 'load', 'meta', 'modify_attribute', 'monitor', 'monitoring', 'network_interfaces', 'network_interfaces_attribute', 'password_data', 'placement', 'placement_group', 'platform', 'private_dns_name', 'private_ip_address', 'product_codes', 'public_dns_name', 'public_ip_address', 'ramdisk_id', 'reboot', 'reload', 'report_status', 'reset_attribute', 'reset_kernel', 'reset_ramdisk', 'reset_source_dest_check', 'root_device_name', 'root_device_type', 'security_groups', 'source_dest_check', 'spot_instance_request_id', 'sriov_net_support', 'start', 'state', 'state_reason', 'state_transition_reason', 'stop', 'subnet', 'subnet_id', 'tags', 'terminate', 'unmonitor', 'virtualization_type', 'volumes', 'vpc', 'vpc_addresses', 'vpc_id', 'wait_until_exists', 'wait_until_running', 'wait_until_stopped', 'wait_until_terminated']
+
+
+ ssh ubuntu@52.23.175.55
+
+ working!!!
+ now try using script
+
+
+fab sethost:52.23.175.55 initiate_instance
+
+test connections with
+
+ssh ubuntu@54.173.21.14
+
+sudo -u postgres psql -c "grant all on tablespace pg_default to raony"
+sudo -u postgres psql -c "ALTER USER raony CREATEDB"
+sudo -u postgres psql -c "DROP DATABASE bioinfo_biobureau"
+
+
+s3cmd
+
+ Config file name. Defaults to $HOME/.s3cfg
+
+s3cmd
+
+/home/raony/.s3cfg
+
+Try to copy one file
+s3cmd ls
+
+s3cmd get s3://logix.cz-test/addrbook.xml addressbook-2.xml
+
+s3cmd ls s3://bioinfobiobureau/input/
+
+s3cmd get --progress --continue s3://bioinfobiobureau/input/MRGBS1_S1_L005_R1_001.fastq.gz
+
+
+
+Create First Project FUll
+
+ACCGT Solanum_pseudoquina.fastq
+CTGAC Inga_edulis.fastq
+GATCA Alchornea_sidifolia.fastq
+CGATC Achyrocline_alata.fastq
+TCGCA Mikania_micrantha.fastq
+CGCAT Lantana_trifolia.fastq
+TCAGC Piper_gaudichaudianum.fastq
+GACTC Baccharis_semiserrata.fastq
+AGTCC Hedychium_coronarium.fastq
+CTCGA Cedrela_fissilis.fastq
+GCACT Piptadenia_gonoacantha.fastq
+AGCTA Ocotea_odorifera.fastq
+CAGCT Sphagneticola_trilobata.fastq
+GCTAC Solanum_swartzianum.fastq
+ACGTC Xylopia_brasiliensis.fastq
+CATGC Guarea_macrophylla.fastq
+ATGCGT Cabralea_canjerana.fastq
+TCCAGT Asclepias_curassavica.fastq
+GCTTGA Nectandra_leucantha.fastq
+CTGGTA Monstera_adansonii.fastq
+GTACAT Astrocaryum_aculeatissimum.fastq
+CTTAGT Ludwigia_octovalvis.fastq
+TCCGTA Bactris_setosa.fastq
+TGACCT Maytenus_aquifolia.fastq
+
+AATGATACGGCGACCACCGAGATCTACACTCTTTCCCTACACGACGCTCTTCCGATCT
+CAAGCAGAAGACGGCATACGAGATCGGTCTCGGCATTCCTGCTGAACCGCTCTTCCGATCT
+
+
+
+sudo apt-get install awscli
+
+aws s3 ls bioinfobiobureau/input/
+
+Total FastQ records: 231624922
+
+FastQ records for barcode TGACCT: 5785113
+FastQ records for barcode TCCGTA: 19364105
+FastQ records for barcode CTTAGT: 16196273
+FastQ records for barcode GTACAT: 9275577
+FastQ records for barcode CTGGTA: 7522820
+FastQ records for barcode GCTTGA: 5200815
+FastQ records for barcode TCCAGT: 9224380
+FastQ records for barcode ATGCGT: 9207889
+FastQ records for barcode CATGC: 20649117
+FastQ records for barcode ACGTC: 17213379
+FastQ records for barcode GCTAC: 11363509
+FastQ records for barcode CAGCT: 3959776
+FastQ records for barcode AGCTA: 24561542
+FastQ records for barcode GCACT: 2702463
+FastQ records for barcode CTCGA: 30427775
+FastQ records for barcode AGTCC: 7969264
+FastQ records for barcode GACTC: 2575024
+FastQ records for barcode TCAGC: 13207804
+FastQ records for barcode CGCAT: 64896
+FastQ records for barcode TCGCA: 8207716
+FastQ records for barcode CGATC: 1344119
+FastQ records for barcode GATCA: 219384
+FastQ records for barcode CTGAC: 155540
+FastQ records for barcode ACCGT: 194035
+
+FastQ records with no barcode match: 5032607
+
+Number of mismatches allowed: 1
+
+
+
+
+http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html
+
+https://aws.amazon.com/ec2/pricing/
+
+Trying a better cpu machine
+
+
+Model   vCPU  Mem (GiB)   Storage
+  Dedicated EBS Bandwidth (Mbps)
+c4.large  2   3.75  EBS-Only  500
+
+c4.large $0.105 hourly $75.6 Dollars per month
+
+Model   vCPU  Mem (GiB)   SSD Storage (GB)  Dedicated EBS Bandwidth (Mbps)
+m4.large  2  8   EBS-only 450
+m4.xlarge   4 16  EBS-only 750
+m4.2xlarge  8  32  EBS-only  1,000
+
+m4.large $0.12 per Hour $86.4 per month
+m4.xlarge $0.239 per Hour $172.08 per month
+m4.2xlarge $0.479 per Hour $344.88 per month
+
+http://www.ec2instances.info/
+
+Run with different parameters on cutadapt
+Run assembly
+
+ssh ubuntu@75.101.210.240
+
+
+http://catchenlab.life.illinois.edu/stacks/comp/process_radtags.php
+
+
+67M Sep  7 09:27 Solanum_pseudoquina.cutadapt.fastq
+
+

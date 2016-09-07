@@ -19,6 +19,7 @@ urlpatterns = [
 
     url(r'^action/$', views.action, name='project-action'),
     url(r'^(?P<project_id>[0-9]+)/task_action/$', views.task_action, name='task-action'),
+    url(r'^(?P<project_id>[0-9]+)/analysis_action/$', views.analysis_action, name='analysis-action'),
     url(r'^(?P<project_id>[0-9]+)/instance_action/$', views.instance_action, name='instance-action'),
 
 ]
