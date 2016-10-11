@@ -50,7 +50,7 @@ class Assembly():
         command = 'sudo apt-get -y upgrade'
         call(command, shell=True)
 
-        command = 'sudo apt-get -y install s3cmd git make htop gcc virtualenvwrapper python-dev locate python-pip zlib1g-dev'
+        command = 'sudo apt-get -y install s3cmd git make htop gcc virtualenvwrapper python-dev locate python-pip zlib1g-dev libboost-all-dev libbz2-dev'
         call(command, shell=True)
         # command = 'sudo pip install cutadapt'
         # call(command, shell=True)
@@ -68,13 +68,21 @@ class Assembly():
         command = "tar -zxvf SPAdes-3.9.0-Linux.tar.gz"
         call(command, shell=True)
 
+        #masurca
+        command = "s3cmd get --progress --continue s3://bioinfobiobureau/programs/MaSuRCA-3.2.1_08102016.tar.gz"
+        call(command, shell=True)
+        command = "tar -zxvf MaSuRCA-3.2.1_08102016.tar.gz"
+        call(command, shell=True)
+        os.chdir('MaSuRCA-3.2.1_08102016')
+        command = "sudo ./install.sh"
+        call(command, shell=True)
 
 
     def run(self):
         
-        # self.install_requirements()
+        self.install_requirements()
         # self.download_fastq()
-        self.assembly()
+        # self.assembly()
         # self.demultiplexing()
         # self.removeadapters()
         #upload results to S3

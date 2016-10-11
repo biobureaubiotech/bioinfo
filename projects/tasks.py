@@ -78,6 +78,7 @@ def import_files_from_basespace(task_id):
         file_obj = File()
         file_obj.user = project_task.user
         file_obj.name = file
+        file_obj.project = project_task.project
         file_obj.save()
 
 
