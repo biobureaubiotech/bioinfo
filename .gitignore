@@ -57,6 +57,7 @@ node_modules/
 .env
 
 # User-uploaded media
+devlog.txt
 bioinfo_biobureau/media/
 
 # Hitch directory
